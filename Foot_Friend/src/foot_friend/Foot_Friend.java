@@ -1,21 +1,135 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package foot_friend;
 
-/**
- *
- * @author feder
- */
-public class Foot_Friend {
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
 
-    /**
-     * @param args the command line arguments
-     */
+public class Foot_Friend{
+
+    private JFrame frame;
+    private CardLayout cardLayout;
+    private JPanel mainPanel;
+    private Map<String, User> users;
+    private String currentUser;
+
     public static void main(String[] args) {
-        // TODO code application logic here
+        SwingUtilities.invokeLater(Foot_Friend::new);
     }
-    
+
+    public Foot_Friend() {
+        users = loadUsers();
+        frame = new JFrame("Foot Friend");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(400, 300);
+
+        cardLayout = new CardLayout();
+        mainPanel = new JPanel(cardLayout);
+
+        mainPanel.add(createLoginPanel(), "Login");
+        mainPanel.add(createCompleteProfilePanel(), "CompleteProfile");
+
+        frame.add(mainPanel);
+        frame.setVisible(true);
+        cardLayout.show(mainPanel, "Login");
+    }
+
+    private JPanel createLoginPanel() {
+        JPanel panel = new JPanel(new GridLayout(4, 1));
+
+        JTextField emailField = new JTextField();
+        JPasswordField passwordField = new JPasswordField();
+        JButton loginButton = new JButton("Login");
+        JButton registerButton = new JButton("Register");
+
+        panel.add(new JLabel("Email:")); 
+        panel.add(emailField);
+        panel.add(new JLabel("Password:")); 
+        panel.add(passwordField);
+        panel.add(loginButton);
+        panel.add(registerButton);
+
+        loginButton.addActionListener(e -> {
+            String email = emailField.getText();
+            String password = new String(passwordField.getPassword());
+
+            if (users.containsKey(email) && users.get(email).getPassword().equals(password)) {
+                currentUser = email;
+                User user = users.get(email);
+                if (user.isProfileComplete()) {
+                    JOptionPane.showMessageDialog(frame, "Login successful!");
+                    // Naviga alla schermata principale (da implementare)
+                } else {
+                    cardLayout.show(mainPanel, "CompleteProfile");
+                }
+            } else {
+                JOptionPane.showMessageDialog(frame, "Invalid email or password.");
+            }
+        });
+
+        registerButton.addActionListener(e -> {
+            String email = emailField.getText();
+            String password = new String(passwordField.getPassword());
+
+            if (!users.containsKey(email)) {
+                users.put(email, new User(email, password));
+                saveUsers();
+                JOptionPane.showMessageDialog(frame, "Registration successful! Please log in.");
+            } else {
+                JOptionPane.showMessageDialog(frame, "Email already registered.");
+            }
+        });
+
+        return panel;
+    }
+
+    private JPanel createCompleteProfilePanel() {
+        JPanel panel = new JPanel(new GridLayout(4, 1));
+
+        JTextField nicknameField = new JTextField();
+        JTextField ageField = new JTextField();
+        JTextField roleField = new JTextField();
+        JButton saveButton = new JButton("Save");
+
+        panel.add(new JLabel("Nickname:")); 
+        panel.add(nicknameField);
+        panel.add(new JLabel("Age:")); 
+        panel.add(ageField);
+        panel.add(new JLabel("Role:")); 
+        panel.add(roleField);
+        panel.add(saveButton);
+
+        saveButton.addActionListener(e -> {
+            User user = users.get(currentUser);
+            user.setNickname(nicknameField.getText());
+            user.setAge(Integer.parseInt(ageField.getText()));
+            user.setRole(roleField.getText());
+            saveUsers();
+            JOptionPane.showMessageDialog(frame, "Profile completed!");
+            // Naviga alla schermata principale (da implementare)
+        });
+
+        return panel;
+    }
+
+    private Map<String, User> loadUsers() {
+        Map<String, User> loadedUsers = new HashMap<>();
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("users.dat"))) {
+            loadedUsers = (Map<String, User>) ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            System.out.println("No existing user data found.");
+        }
+        return loadedUsers;
+    }
+
+    private void saveUsers() {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("users.dat"))) {
+            oos.writeObject(users);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
