@@ -72,6 +72,15 @@ public class Foot_Friend {
         return mainScreen;
     }
 
+    private void updateHomePanel() {
+    JPanel mainScreen = (JPanel) mainPanel.getComponent(2); 
+    JPanel screens = (JPanel) mainScreen.getComponent(0);
+    CardLayout screensLayout = (CardLayout) screens.getLayout();
+    screens.remove(0);
+    screens.add(createHomePanel(), "Home");
+    screensLayout.show(screens, "Home");
+}
+
     private JPanel createHomePanel() {
         JPanel panel = new JPanel(new GridLayout(5, 1));
         if (currentUser == null || !users.containsKey(currentUser)) {
@@ -134,16 +143,21 @@ public class Foot_Friend {
             String email = emailField.getText();
             String password = new String(passwordField.getPassword());
 
+            System.out.println("Attempting login for email: " + email);
             if (users.containsKey(email) && users.get(email).getPassword().equals(password)) {
                 currentUser = email;
+                System.out.println("Login successful for user: " + currentUser);
                 User user = users.get(email);
+
                 if (user.isProfileComplete()) {
                     JOptionPane.showMessageDialog(frame, "Login successful!");
+                    updateHomePanel();
                     cardLayout.show(mainPanel, "MainScreen");
                 } else {
                     cardLayout.show(mainPanel, "CompleteProfile");
                 }
             } else {
+                System.out.println("Login failed for email: " + email);
                 JOptionPane.showMessageDialog(frame, "Invalid email or password.");
             }
         });
