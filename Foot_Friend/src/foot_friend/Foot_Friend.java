@@ -6,6 +6,8 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
+
+
 public class Foot_Friend {
 
     private JFrame frame;
@@ -13,6 +15,7 @@ public class Foot_Friend {
     private JPanel mainPanel;
     private Map<String, User> users;
     private String currentUser;
+    private java.util.List<Match> matches;
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(Foot_Friend::new);
@@ -20,30 +23,30 @@ public class Foot_Friend {
 
     public Foot_Friend() {
         try {
-            users = loadUsers();
-        } catch (Exception e) {
-            users = new HashMap<>();
-            System.out.println("Errore durante il caricamento degli utenti: " + e.getMessage());
-        }
+        users = loadUsers();
+        matches = loadMatches(); // Carica le partite salvate
+    } catch (Exception e) {
+        users = new HashMap<>();
+        matches = new java.util.ArrayList<>(); // Inizializza una lista vuota se il file non esiste
+        System.out.println("Errore durante il caricamento: " + e.getMessage());
+    }
 
-        frame = new JFrame("Foot Friend");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(400, 300);
+    frame = new JFrame("Foot Friend");
+    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    frame.setSize(400, 300);
 
-        cardLayout = new CardLayout();
-        mainPanel = new JPanel(cardLayout);
+    cardLayout = new CardLayout();
+    mainPanel = new JPanel(cardLayout);
 
-        try {
-            mainPanel.add(createLoginPanel(), "Login");
-            mainPanel.add(createCompleteProfilePanel(), "CompleteProfile");
-            mainPanel.add(createMainScreen(), "MainScreen");
-        } catch (Exception e) {
-            System.out.println("Errore durante l'inizializzazione delle schermate: " + e.getMessage());
-        }
+    mainPanel.add(createLoginPanel(), "Login");
+    mainPanel.add(createCompleteProfilePanel(), "CompleteProfile");
+    mainPanel.add(createMainScreen(), "MainScreen");
+    mainPanel.add(createPartitePanel(), "Partite");
+    mainPanel.add(createCreateMatchPanel(), "CreateMatch");
 
-        frame.add(mainPanel);
-        frame.setVisible(true);
-        cardLayout.show(mainPanel, "Login");
+    frame.add(mainPanel);
+    frame.setVisible(true);
+    cardLayout.show(mainPanel, "Login");
     }
 
     private JPanel createMainScreen() {
@@ -134,13 +137,61 @@ public class Foot_Friend {
         return panel;
     }
 
-    private JPanel createPartitePanel() {
-        JPanel panel = new JPanel();
-        JLabel label = new JLabel("Partite", SwingConstants.CENTER);
-        label.setFont(new Font("Arial", Font.BOLD, 20));
-        panel.add(label);
-        return panel;
+private JPanel createPartitePanel() {
+    JPanel panel = new JPanel(new BorderLayout());
+    JPanel matchesPanel = new JPanel(new GridLayout(0, 1)); // Dinamico per aggiungere partite
+    JScrollPane scrollPane = new JScrollPane(matchesPanel);
+    JButton createMatchButton = new JButton("Crea Partita");
+
+    // Aggiungi ogni partita alla lista
+    for (Match match : matches) { // matches è una lista di Match
+        JPanel matchPanel = new JPanel(new GridLayout(6, 1));
+        matchPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+
+        JLabel ownerLabel = new JLabel("Proprietario: " + match.getOwner());
+        JLabel locationLabel = new JLabel("Luogo: " + match.getLocation());
+        JLabel dateLabel = new JLabel("Data: " + match.getDate());
+        JLabel modeLabel = new JLabel("Modalità: " + match.getMode());
+        JLabel spotsLabel = new JLabel("Posti disponibili: " + match.getAvailableSpots());
+
+        JButton joinButton = new JButton("Unisciti");
+        joinButton.setEnabled(match.getAvailableSpots() > 0); // Disabilitato se non ci sono posti
+
+        joinButton.addActionListener(e -> {
+            match.joinMatch();
+            users.get(currentUser).addXp(5); // Aggiunge 5 XP all'utente
+            saveUsers();
+            updatePartitePanel();
+        });
+
+        matchPanel.add(ownerLabel);
+        matchPanel.add(locationLabel);
+        matchPanel.add(dateLabel);
+        matchPanel.add(modeLabel);
+        matchPanel.add(spotsLabel);
+        matchPanel.add(joinButton);
+
+        matchesPanel.add(matchPanel);
     }
+
+    // Aggiungi il bottone per creare una partita
+    createMatchButton.addActionListener(e -> cardLayout.show(mainPanel, "CreateMatch"));
+    panel.add(scrollPane, BorderLayout.CENTER);
+    panel.add(createMatchButton, BorderLayout.SOUTH);
+
+    return panel;
+}
+
+private void updatePartitePanel() {
+    JPanel mainScreen = (JPanel) mainPanel.getComponent(2);
+    JPanel screens = (JPanel) mainScreen.getComponent(0);
+    CardLayout screensLayout = (CardLayout) screens.getLayout();
+
+    screens.remove(1); // Rimuovi la vecchia schermata partite
+    screens.add(createPartitePanel(), "Partite");
+
+    screensLayout.show(screens, "Partite");
+}
 
 private JPanel createProfiloPanel() {
     JPanel panel = new JPanel(new GridLayout(4, 1));
@@ -274,4 +325,60 @@ private JPanel createProfiloPanel() {
             e.printStackTrace();
         }
     }
+    private JPanel createCreateMatchPanel() {
+    JPanel panel = new JPanel(new GridLayout(5, 2));
+
+    JTextField locationField = new JTextField();
+    JTextField dateField = new JTextField();
+    JComboBox<String> modeBox = new JComboBox<>(new String[]{"5 vs 5", "7 vs 7", "11 vs 11"});
+    JTextField maxPlayersField = new JTextField();
+    JButton createButton = new JButton("Crea");
+
+    panel.add(new JLabel("Luogo:"));
+    panel.add(locationField);
+    panel.add(new JLabel("Data:"));
+    panel.add(dateField);
+    panel.add(new JLabel("Modalità:"));
+    panel.add(modeBox);
+    panel.add(new JLabel("Numero massimo di giocatori:"));
+    panel.add(maxPlayersField);
+    panel.add(new JLabel());
+    panel.add(createButton);
+
+    createButton.addActionListener(e -> {
+        try {
+            String location = locationField.getText();
+            String date = dateField.getText();
+            String mode = (String) modeBox.getSelectedItem();
+            int maxPlayers = Integer.parseInt(maxPlayersField.getText());
+
+            Match newMatch = new Match(currentUser, location, date, mode, maxPlayers);
+            matches.add(newMatch); // matches è una lista globale di Match
+            saveMatches(); // Metodo per salvare le partite
+            updatePartitePanel(); // Torna alla schermata partite
+            cardLayout.show(mainPanel, "Partite");
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(frame, "Inserisci un numero valido per i giocatori.");
+        }
+    });
+    
+    return panel;
+}
+    private void saveMatches() {
+    try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("matches.dat"))) {
+        oos.writeObject(matches);
+    } catch (IOException e) {
+        System.out.println("Errore durante il salvataggio delle partite: " + e.getMessage());
+    }
+}
+
+    private java.util.List<Match> loadMatches() {
+    try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("matches.dat"))) {
+        return (java.util.List<Match>) ois.readObject();
+    } catch (IOException | ClassNotFoundException e) {
+        System.out.println("Nessun dato sulle partite trovato.");
+        return new java.util.ArrayList<>();
+    }
+}
+    
 }
