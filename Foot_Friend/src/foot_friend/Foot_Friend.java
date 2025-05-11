@@ -8,7 +8,7 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Foot_Friend{
+public class Foot_Friend {
 
     private JFrame frame;
     private CardLayout cardLayout;
@@ -31,6 +31,7 @@ public class Foot_Friend{
 
         mainPanel.add(createLoginPanel(), "Login");
         mainPanel.add(createCompleteProfilePanel(), "CompleteProfile");
+        mainPanel.add(createHomePanel(), "Home");
 
         frame.add(mainPanel);
         frame.setVisible(true);
@@ -61,7 +62,7 @@ public class Foot_Friend{
                 User user = users.get(email);
                 if (user.isProfileComplete()) {
                     JOptionPane.showMessageDialog(frame, "Login successful!");
-                    // Naviga alla schermata principale (da implementare)
+                    navigateToHome();
                 } else {
                     cardLayout.show(mainPanel, "CompleteProfile");
                 }
@@ -109,11 +110,48 @@ public class Foot_Friend{
             user.setRole(roleField.getText());
             saveUsers();
             JOptionPane.showMessageDialog(frame, "Profile completed!");
-            // Naviga alla schermata principale (da implementare)
+            navigateToHome();
         });
 
         return panel;
     }
+
+    private JPanel createHomePanel() {
+    JPanel panel = new JPanel(new GridLayout(5, 1));
+
+    JLabel nicknameLabel = new JLabel("", SwingConstants.CENTER);
+    JLabel ageLabel = new JLabel("", SwingConstants.CENTER);
+    JLabel roleLabel = new JLabel("", SwingConstants.CENTER);
+    JProgressBar xpBar = new JProgressBar(0, 15);
+
+    // Aggiorna dinamicamente i dati del pannello
+    SwingUtilities.invokeLater(() -> {
+        User user = users.get(currentUser);
+        if (user != null) {
+            nicknameLabel.setText("Nickname: " + user.getNickname());
+            ageLabel.setText("Age: " + user.getAge());
+            roleLabel.setText("Role: " + user.getRole());
+            int xp = user.getXp();
+            int level = user.getLevel();
+            xpBar.setValue(xp % 15);
+            xpBar.setString("Level: " + level + " | XP: " + xp + "/15");
+            xpBar.setStringPainted(true);
+        }
+    });
+
+    panel.add(nicknameLabel);
+    panel.add(ageLabel);
+    panel.add(roleLabel);
+    panel.add(xpBar);
+
+    return panel;
+}
+
+    private void navigateToHome() {
+    mainPanel.remove(mainPanel.getComponent(2)); // Rimuove il vecchio pannello Home
+    mainPanel.add(createHomePanel(), "Home");   // Aggiunge il nuovo pannello Home
+    cardLayout.show(mainPanel, "Home");
+}
 
     private Map<String, User> loadUsers() {
         Map<String, User> loadedUsers = new HashMap<>();

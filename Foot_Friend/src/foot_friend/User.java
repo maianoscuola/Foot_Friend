@@ -8,10 +8,12 @@ public class User implements Serializable {
     private String nickname;
     private int age;
     private String role;
+    private int xp; // XP accumulata
 
     public User(String email, String password) {
         this.email = email;
         this.password = password;
+        this.xp = 0; // Inizialmente 0
     }
 
     public String getPassword() {
@@ -44,5 +46,17 @@ public class User implements Serializable {
 
     public boolean isProfileComplete() {
         return nickname != null && !nickname.isEmpty() && age > 0 && role != null && !role.isEmpty();
+    }
+
+    public int getXp() {
+        return xp;
+    }
+
+    public void addXp(int amount) {
+        this.xp += amount;
+    }
+
+    public int getLevel() {
+        return xp / 15;
     }
 }
