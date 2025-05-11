@@ -2,8 +2,6 @@ package foot_friend;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +19,13 @@ public class Foot_Friend {
     }
 
     public Foot_Friend() {
-        users = loadUsers();
+        try {
+            users = loadUsers();
+        } catch (Exception e) {
+            users = new HashMap<>();
+            System.out.println("Errore durante il caricamento degli utenti: " + e.getMessage());
+        }
+
         frame = new JFrame("Foot Friend");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(400, 300);
@@ -29,26 +33,99 @@ public class Foot_Friend {
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
 
-        mainPanel.add(createLoginPanel(), "Login");
-        mainPanel.add(createCompleteProfilePanel(), "CompleteProfile");
-        mainPanel.add(createHomePanel(), "Home");
+        try {
+            mainPanel.add(createLoginPanel(), "Login");
+            mainPanel.add(createCompleteProfilePanel(), "CompleteProfile");
+            mainPanel.add(createMainScreen(), "MainScreen");
+        } catch (Exception e) {
+            System.out.println("Errore durante l'inizializzazione delle schermate: " + e.getMessage());
+        }
 
         frame.add(mainPanel);
         frame.setVisible(true);
         cardLayout.show(mainPanel, "Login");
     }
 
+    private JPanel createMainScreen() {
+        JPanel mainScreen = new JPanel(new BorderLayout());
+        JPanel screens = new JPanel(new CardLayout());
+        screens.add(createHomePanel(), "Home");
+        screens.add(createPartitePanel(), "Partite");
+        screens.add(createProfiloPanel(), "Profilo");
+
+        JPanel navBar = new JPanel(new GridLayout(1, 3));
+        JButton homeButton = new JButton("Home");
+        JButton partiteButton = new JButton("Partite");
+        JButton profiloButton = new JButton("Profilo");
+
+        homeButton.addActionListener(e -> ((CardLayout) screens.getLayout()).show(screens, "Home"));
+        partiteButton.addActionListener(e -> ((CardLayout) screens.getLayout()).show(screens, "Partite"));
+        profiloButton.addActionListener(e -> ((CardLayout) screens.getLayout()).show(screens, "Profilo"));
+
+        navBar.add(homeButton);
+        navBar.add(partiteButton);
+        navBar.add(profiloButton);
+
+        mainScreen.add(screens, BorderLayout.CENTER);
+        mainScreen.add(navBar, BorderLayout.SOUTH);
+
+        return mainScreen;
+    }
+
+    private JPanel createHomePanel() {
+        JPanel panel = new JPanel(new GridLayout(5, 1));
+        if (currentUser == null || !users.containsKey(currentUser)) {
+            panel.add(new JLabel("Errore: utente non trovato!"));
+            return panel;
+        }
+
+        User user = users.get(currentUser);
+        JLabel nicknameLabel = new JLabel("Nickname: " + user.getNickname(), SwingConstants.CENTER);
+        JLabel ageLabel = new JLabel("Age: " + user.getAge(), SwingConstants.CENTER);
+        JLabel roleLabel = new JLabel("Role: " + user.getRole(), SwingConstants.CENTER);
+
+        int xp = user.getXp();
+        int level = user.getLevel();
+        JProgressBar xpBar = new JProgressBar(0, 15);
+        xpBar.setValue(xp % 15);
+        xpBar.setString("Level: " + level + " | XP: " + xp + "/15");
+        xpBar.setStringPainted(true);
+
+        panel.add(nicknameLabel);
+        panel.add(ageLabel);
+        panel.add(roleLabel);
+        panel.add(xpBar);
+
+        return panel;
+    }
+
+    private JPanel createPartitePanel() {
+        JPanel panel = new JPanel();
+        JLabel label = new JLabel("Partite", SwingConstants.CENTER);
+        label.setFont(new Font("Arial", Font.BOLD, 20));
+        panel.add(label);
+        return panel;
+    }
+
+    private JPanel createProfiloPanel() {
+        JPanel panel = new JPanel();
+        JLabel label = new JLabel("Profilo", SwingConstants.CENTER);
+        label.setFont(new Font("Arial", Font.BOLD, 20));
+        panel.add(label);
+        return panel;
+    }
+
     private JPanel createLoginPanel() {
-        JPanel panel = new JPanel(new GridLayout(4, 1));
+        JPanel panel = new JPanel(new GridLayout(6, 1));
 
         JTextField emailField = new JTextField();
         JPasswordField passwordField = new JPasswordField();
         JButton loginButton = new JButton("Login");
         JButton registerButton = new JButton("Register");
 
-        panel.add(new JLabel("Email:")); 
+        panel.add(new JLabel("Email:"));
         panel.add(emailField);
-        panel.add(new JLabel("Password:")); 
+        panel.add(new JLabel("Password:"));
         panel.add(passwordField);
         panel.add(loginButton);
         panel.add(registerButton);
@@ -62,7 +139,7 @@ public class Foot_Friend {
                 User user = users.get(email);
                 if (user.isProfileComplete()) {
                     JOptionPane.showMessageDialog(frame, "Login successful!");
-                    navigateToHome();
+                    cardLayout.show(mainPanel, "MainScreen");
                 } else {
                     cardLayout.show(mainPanel, "CompleteProfile");
                 }
@@ -95,11 +172,11 @@ public class Foot_Friend {
         JTextField roleField = new JTextField();
         JButton saveButton = new JButton("Save");
 
-        panel.add(new JLabel("Nickname:")); 
+        panel.add(new JLabel("Nickname:"));
         panel.add(nicknameField);
-        panel.add(new JLabel("Age:")); 
+        panel.add(new JLabel("Age:"));
         panel.add(ageField);
-        panel.add(new JLabel("Role:")); 
+        panel.add(new JLabel("Role:"));
         panel.add(roleField);
         panel.add(saveButton);
 
@@ -110,48 +187,11 @@ public class Foot_Friend {
             user.setRole(roleField.getText());
             saveUsers();
             JOptionPane.showMessageDialog(frame, "Profile completed!");
-            navigateToHome();
+            cardLayout.show(mainPanel, "MainScreen");
         });
 
         return panel;
     }
-
-    private JPanel createHomePanel() {
-    JPanel panel = new JPanel(new GridLayout(5, 1));
-
-    JLabel nicknameLabel = new JLabel("", SwingConstants.CENTER);
-    JLabel ageLabel = new JLabel("", SwingConstants.CENTER);
-    JLabel roleLabel = new JLabel("", SwingConstants.CENTER);
-    JProgressBar xpBar = new JProgressBar(0, 15);
-
-    // Aggiorna dinamicamente i dati del pannello
-    SwingUtilities.invokeLater(() -> {
-        User user = users.get(currentUser);
-        if (user != null) {
-            nicknameLabel.setText("Nickname: " + user.getNickname());
-            ageLabel.setText("Age: " + user.getAge());
-            roleLabel.setText("Role: " + user.getRole());
-            int xp = user.getXp();
-            int level = user.getLevel();
-            xpBar.setValue(xp % 15);
-            xpBar.setString("Level: " + level + " | XP: " + xp + "/15");
-            xpBar.setStringPainted(true);
-        }
-    });
-
-    panel.add(nicknameLabel);
-    panel.add(ageLabel);
-    panel.add(roleLabel);
-    panel.add(xpBar);
-
-    return panel;
-}
-
-    private void navigateToHome() {
-    mainPanel.remove(mainPanel.getComponent(2)); // Rimuove il vecchio pannello Home
-    mainPanel.add(createHomePanel(), "Home");   // Aggiunge il nuovo pannello Home
-    cardLayout.show(mainPanel, "Home");
-}
 
     private Map<String, User> loadUsers() {
         Map<String, User> loadedUsers = new HashMap<>();
