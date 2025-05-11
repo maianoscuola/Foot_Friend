@@ -59,4 +59,8 @@ public class User implements Serializable {
     public int getLevel() {
         return xp / 15;
     }
+    
+    public String getEmail() {
+    return email;
+}
 }

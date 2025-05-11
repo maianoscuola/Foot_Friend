@@ -60,7 +60,10 @@ public class Foot_Friend {
 
         homeButton.addActionListener(e -> ((CardLayout) screens.getLayout()).show(screens, "Home"));
         partiteButton.addActionListener(e -> ((CardLayout) screens.getLayout()).show(screens, "Partite"));
-        profiloButton.addActionListener(e -> ((CardLayout) screens.getLayout()).show(screens, "Profilo"));
+        profiloButton.addActionListener(e -> { 
+            updateProfiloPanel();
+        ((CardLayout) screens.getLayout()).show(screens, "Profilo");
+        });
 
         navBar.add(homeButton);
         navBar.add(partiteButton);
@@ -71,22 +74,36 @@ public class Foot_Friend {
 
         return mainScreen;
     }
+    private void updateProfiloPanel() {
+    // Ottieni il mainScreen e screens dai componenti esistenti
+    JPanel mainScreen = (JPanel) mainPanel.getComponent(2);
+    JPanel screens = (JPanel) mainScreen.getComponent(0);
+    CardLayout screensLayout = (CardLayout) screens.getLayout();
+
+    // Rimuovi il vecchio pannello profilo e aggiungi quello nuovo
+    screens.remove(2); // Supponendo che il pannello profilo sia il terzo nel layout
+    screens.add(createProfiloPanel(), "Profilo");
+
+    // Mostra il pannello profilo
+    screensLayout.show(screens, "Profilo");
+}
+
 
     private void updateHomePanel() {
-    // Trova il pannello principale della schermata principale
-    JPanel mainScreen = (JPanel) mainPanel.getComponent(2); // La schermata "MainScreen"
     
-    // Ottieni il pannello "screens" che contiene la home
-    JPanel screens = (JPanel) mainScreen.getComponent(0); // Primo componente in "MainScreen"
+    JPanel mainScreen = (JPanel) mainPanel.getComponent(2); 
+    
+   
+    JPanel screens = (JPanel) mainScreen.getComponent(0); 
     CardLayout screensLayout = (CardLayout) screens.getLayout();
     
-    // Rimuovi il vecchio pannello Home
+    
     screens.remove(0);
 
-    // Aggiungi una nuova versione del pannello Home aggiornato
+   
     screens.add(createHomePanel(), "Home");
 
-    // Mostra il pannello Home aggiornato
+    
     screensLayout.show(screens, "Home");
 }
 
@@ -125,13 +142,37 @@ public class Foot_Friend {
         return panel;
     }
 
-    private JPanel createProfiloPanel() {
-        JPanel panel = new JPanel();
-        JLabel label = new JLabel("Profilo", SwingConstants.CENTER);
-        label.setFont(new Font("Arial", Font.BOLD, 20));
-        panel.add(label);
+private JPanel createProfiloPanel() {
+    JPanel panel = new JPanel(new GridLayout(4, 1));
+
+    // Controlla che l'utente corrente esista
+    if (currentUser == null || !users.containsKey(currentUser)) {
+        panel.add(new JLabel("Errore: utente non trovato!", SwingConstants.CENTER));
         return panel;
     }
+
+    // Ottieni i dati dell'utente corrente
+    User user = users.get(currentUser);
+    JLabel emailLabel = new JLabel("Email: " + user.getEmail(), SwingConstants.CENTER);
+    JLabel nicknameLabel = new JLabel("Nickname: " + user.getNickname(), SwingConstants.CENTER);
+    JLabel ageLabel = new JLabel("Età: " + user.getAge(), SwingConstants.CENTER);
+
+    // Crea il bottone per il logout
+    JButton logoutButton = new JButton("Logout");
+    logoutButton.addActionListener(e -> {
+        currentUser = null; // Resetta l'utente corrente
+        cardLayout.show(mainPanel, "Login"); // Torna al pannello di login
+    });
+
+    // Aggiungi i componenti al pannello
+    panel.add(emailLabel);
+    panel.add(nicknameLabel);
+    panel.add(ageLabel);
+    panel.add(logoutButton);
+
+    return panel;
+}
+
 
     private JPanel createLoginPanel() {
         JPanel panel = new JPanel(new GridLayout(6, 1));
