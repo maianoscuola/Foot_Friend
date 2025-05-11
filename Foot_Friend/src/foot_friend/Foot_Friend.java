@@ -44,6 +44,7 @@ public class Foot_Friend {
         frame.add(mainPanel);
         frame.setVisible(true);
         cardLayout.show(mainPanel, "Login");
+        System.out.println("");
     }
 
     private JPanel createMainScreen() {
