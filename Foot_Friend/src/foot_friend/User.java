@@ -8,12 +8,12 @@ public class User implements Serializable {
     private String nickname;
     private int age;
     private String role;
-    private int xp; // XP accumulata
+    private int xp; 
 
     public User(String email, String password) {
         this.email = email;
         this.password = password;
-        this.xp = 0; // Inizialmente 0
+        this.xp = 0; 
     }
 
     public String getPassword() {

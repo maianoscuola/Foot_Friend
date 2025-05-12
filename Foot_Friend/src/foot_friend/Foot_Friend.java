@@ -24,10 +24,10 @@ public class Foot_Friend {
     public Foot_Friend() {
         try {
         users = loadUsers();
-        matches = loadMatches(); // Carica le partite salvate
+        matches = loadMatches(); 
     } catch (Exception e) {
         users = new HashMap<>();
-        matches = new java.util.ArrayList<>(); // Inizializza una lista vuota se il file non esiste
+        matches = new java.util.ArrayList<>(); 
         System.out.println("Errore durante il caricamento: " + e.getMessage());
     }
 
@@ -78,16 +78,13 @@ public class Foot_Friend {
         return mainScreen;
     }
     private void updateProfiloPanel() {
-    // Ottieni il mainScreen e screens dai componenti esistenti
     JPanel mainScreen = (JPanel) mainPanel.getComponent(2);
     JPanel screens = (JPanel) mainScreen.getComponent(0);
     CardLayout screensLayout = (CardLayout) screens.getLayout();
 
-    // Rimuovi il vecchio pannello profilo e aggiungi quello nuovo
-    screens.remove(2); // Supponendo che il pannello profilo sia il terzo nel layout
+    screens.remove(2); 
     screens.add(createProfiloPanel(), "Profilo");
 
-    // Mostra il pannello profilo
     screensLayout.show(screens, "Profilo");
 }
 
@@ -139,12 +136,11 @@ public class Foot_Friend {
 
 private JPanel createPartitePanel() {
     JPanel panel = new JPanel(new BorderLayout());
-    JPanel matchesPanel = new JPanel(new GridLayout(0, 1)); // Dinamico per aggiungere partite
+    JPanel matchesPanel = new JPanel(new GridLayout(0, 1));
     JScrollPane scrollPane = new JScrollPane(matchesPanel);
     JButton createMatchButton = new JButton("Crea Partita");
 
-    // Aggiungi ogni partita alla lista
-    for (Match match : matches) { // matches è una lista di Match
+    for (Match match : matches) {
         JPanel matchPanel = new JPanel(new GridLayout(6, 1));
         matchPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
@@ -155,11 +151,10 @@ private JPanel createPartitePanel() {
         JLabel spotsLabel = new JLabel("Posti disponibili: " + match.getAvailableSpots());
 
         JButton joinButton = new JButton("Unisciti");
-        joinButton.setEnabled(match.getAvailableSpots() > 0); // Disabilitato se non ci sono posti
-
+        joinButton.setEnabled(match.getAvailableSpots() > 0); 
         joinButton.addActionListener(e -> {
             match.joinMatch();
-            users.get(currentUser).addXp(5); // Aggiunge 5 XP all'utente
+            users.get(currentUser).addXp(5); 
             saveUsers();
             updatePartitePanel();
         });
@@ -174,7 +169,6 @@ private JPanel createPartitePanel() {
         matchesPanel.add(matchPanel);
     }
 
-    // Aggiungi il bottone per creare una partita
     createMatchButton.addActionListener(e -> cardLayout.show(mainPanel, "CreateMatch"));
     panel.add(scrollPane, BorderLayout.CENTER);
     panel.add(createMatchButton, BorderLayout.SOUTH);
@@ -187,7 +181,7 @@ private void updatePartitePanel() {
     JPanel screens = (JPanel) mainScreen.getComponent(0);
     CardLayout screensLayout = (CardLayout) screens.getLayout();
 
-    screens.remove(1); // Rimuovi la vecchia schermata partite
+    screens.remove(1); 
     screens.add(createPartitePanel(), "Partite");
 
     screensLayout.show(screens, "Partite");
@@ -196,26 +190,22 @@ private void updatePartitePanel() {
 private JPanel createProfiloPanel() {
     JPanel panel = new JPanel(new GridLayout(4, 1));
 
-    // Controlla che l'utente corrente esista
     if (currentUser == null || !users.containsKey(currentUser)) {
         panel.add(new JLabel("Errore: utente non trovato!", SwingConstants.CENTER));
         return panel;
     }
 
-    // Ottieni i dati dell'utente corrente
     User user = users.get(currentUser);
     JLabel emailLabel = new JLabel("Email: " + user.getEmail(), SwingConstants.CENTER);
     JLabel nicknameLabel = new JLabel("Nickname: " + user.getNickname(), SwingConstants.CENTER);
     JLabel ageLabel = new JLabel("Età: " + user.getAge(), SwingConstants.CENTER);
 
-    // Crea il bottone per il logout
     JButton logoutButton = new JButton("Logout");
     logoutButton.addActionListener(e -> {
-        currentUser = null; // Resetta l'utente corrente
-        cardLayout.show(mainPanel, "Login"); // Torna al pannello di login
+        currentUser = null; 
+        cardLayout.show(mainPanel, "Login"); 
     });
 
-    // Aggiungi i componenti al pannello
     panel.add(emailLabel);
     panel.add(nicknameLabel);
     panel.add(ageLabel);
@@ -353,9 +343,9 @@ private JPanel createProfiloPanel() {
             int maxPlayers = Integer.parseInt(maxPlayersField.getText());
 
             Match newMatch = new Match(currentUser, location, date, mode, maxPlayers);
-            matches.add(newMatch); // matches è una lista globale di Match
-            saveMatches(); // Metodo per salvare le partite
-            updatePartitePanel(); // Torna alla schermata partite
+            matches.add(newMatch);
+            saveMatches(); 
+            updatePartitePanel(); 
             cardLayout.show(mainPanel, "Partite");
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(frame, "Inserisci un numero valido per i giocatori.");
