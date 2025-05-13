@@ -1,5 +1,7 @@
 package foot_friend;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Match implements Serializable {
     private String owner;
@@ -8,6 +10,7 @@ public class Match implements Serializable {
     private String mode;
     private int maxPlayers;
     private int currentPlayers;
+    private List<String> joinedUsers;
 
     public Match(String owner, String location, String date, String mode, int maxPlayers) {
         this.owner = owner;
@@ -15,7 +18,8 @@ public class Match implements Serializable {
         this.date = date;
         this.mode = mode;
         this.maxPlayers = maxPlayers;
-        this.currentPlayers = 0; // Nessun giocatore inizialmente
+        this.currentPlayers = 0; 
+        this.joinedUsers = new ArrayList<>();
     }
 
     public String getOwner() {
