@@ -641,18 +641,24 @@ private JPanel createRegisterPanel() {
 }
 
     private void updateProfilePanel() {
-        JPanel mainScreen = (JPanel) mainPanel.getComponent(3);
-        JPanel profileScreen = (JPanel) ((JPanel) mainScreen.getComponent(0)).getComponent(2); // Naviga al profilo
-        if (currentUser != null) {
-            ((JLabel) profileScreen.getComponent(1)).setText(currentUser.getNickname());
-            ((JLabel) profileScreen.getComponent(3)).setText(String.valueOf(currentUser.getAge()));
-            ((JLabel) profileScreen.getComponent(5)).setText(currentUser.getRole());
-            ((JLabel) profileScreen.getComponent(7)).setText(String.valueOf(currentUser.getLevel()));
-        } else {
-            ((JLabel) profileScreen.getComponent(1)).setText("");
-            ((JLabel) profileScreen.getComponent(3)).setText("");
-            ((JLabel) profileScreen.getComponent(5)).setText("");
-            ((JLabel) profileScreen.getComponent(7)).setText("");
-        }
+    JPanel mainScreen = (JPanel) mainPanel.getComponent(3);
+    JPanel profileScreen = (JPanel) ((JPanel) mainScreen.getComponent(0)).getComponent(2); // Naviga al profilo
+    
+    if (currentUser != null) {
+        // Aggiorna i valori con etichette descrittive
+        ((JLabel) profileScreen.getComponent(1)).setText("Email: " + String.valueOf(currentUser.getEmail()));
+        ((JLabel) profileScreen.getComponent(3)).setText("Nickname: " + currentUser.getNickname());
+        ((JLabel) profileScreen.getComponent(5)).setText("Età: " + String.valueOf(currentUser.getAge()));
+        ((JLabel) profileScreen.getComponent(7)).setText("Ruolo: " + currentUser.getRole());
+        
+        
+    } else {
+        // Ripristina valori vuoti
+        ((JLabel) profileScreen.getComponent(1)).setText("");
+        ((JLabel) profileScreen.getComponent(3)).setText("");
+        ((JLabel) profileScreen.getComponent(5)).setText("");
+        ((JLabel) profileScreen.getComponent(7)).setText("");
+        
     }
+}
 }
