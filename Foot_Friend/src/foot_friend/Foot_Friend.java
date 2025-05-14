@@ -255,59 +255,43 @@ public class Foot_Friend extends JFrame {
 
     return panel;
 }
-   private JPanel createCompleteProfilePanel() {
-    JPanel panel = new JPanel(new GridBagLayout());
-    panel.setBackground(BACKGROUND_COLOR); // Sfondo personalizzato
+  private JPanel createCompleteProfilePanel() {
+    JPanel panel = new JPanel(new BorderLayout());
+    panel.setBackground(BACKGROUND_COLOR);
 
-    GridBagConstraints gbc = new GridBagConstraints();
-    gbc.insets = new Insets(10, 10, 10, 10);
-    gbc.fill = GridBagConstraints.HORIZONTAL;
+    JPanel formPanel = new JPanel();
+    formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
+    formPanel.setBackground(BACKGROUND_COLOR);
 
     JLabel titleLabel = new JLabel("Completa il tuo profilo", SwingConstants.CENTER);
     titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
-    titleLabel.setForeground(TEXT_COLOR); // Colore del testo
+    titleLabel.setForeground(TEXT_COLOR);
 
     JTextField nicknameField = new JTextField();
-    nicknameField.setBorder(BorderFactory.createLineBorder(PRIMARY_COLOR)); // Bordo blu
+    nicknameField.setBorder(BorderFactory.createLineBorder(PRIMARY_COLOR));
 
     JTextField ageField = new JTextField();
-    ageField.setBorder(BorderFactory.createLineBorder(PRIMARY_COLOR)); // Bordo blu
+    ageField.setBorder(BorderFactory.createLineBorder(PRIMARY_COLOR));
 
     JTextField roleField = new JTextField();
-    roleField.setBorder(BorderFactory.createLineBorder(PRIMARY_COLOR)); // Bordo blu
+    roleField.setBorder(BorderFactory.createLineBorder(PRIMARY_COLOR));
 
     JButton saveButton = createRoundedButton("Salva Profilo", PRIMARY_COLOR, Color.WHITE);
 
-    gbc.gridx = 0;
-    gbc.gridy = 0;
-    gbc.gridwidth = 2;
-    panel.add(titleLabel, gbc);
+    formPanel.add(titleLabel);
+    formPanel.add(Box.createVerticalStrut(10));
+    formPanel.add(new JLabel("Nickname:"));
+    formPanel.add(nicknameField);
+    formPanel.add(Box.createVerticalStrut(10));
+    formPanel.add(new JLabel("Età:"));
+    formPanel.add(ageField);
+    formPanel.add(Box.createVerticalStrut(10));
+    formPanel.add(new JLabel("Ruolo preferito:"));
+    formPanel.add(roleField);
+    formPanel.add(Box.createVerticalStrut(10));
+    formPanel.add(saveButton);
 
-    gbc.gridy++;
-    gbc.gridwidth = 1;
-    panel.add(new JLabel("Nickname:"), gbc);
-
-    gbc.gridx = 1;
-    panel.add(nicknameField, gbc);
-
-    gbc.gridx = 0;
-    gbc.gridy++;
-    panel.add(new JLabel("Età:"), gbc);
-
-    gbc.gridx = 1;
-    panel.add(ageField, gbc);
-
-    gbc.gridx = 0;
-    gbc.gridy++;
-    panel.add(new JLabel("Ruolo preferito:"), gbc);
-
-    gbc.gridx = 1;
-    panel.add(roleField, gbc);
-
-    gbc.gridx = 0;
-    gbc.gridy++;
-    gbc.gridwidth = 2;
-    panel.add(saveButton, gbc);
+    panel.add(formPanel, BorderLayout.CENTER);
 
     saveButton.addActionListener(e -> {
         if (currentUser != null) {
@@ -367,22 +351,37 @@ public class Foot_Friend extends JFrame {
     }
 
     private JPanel createHomeScreen() {
-        JPanel panel = new JPanel(new GridLayout(5, 1, 5, 5));
-        JLabel nicknameLabel = new JLabel("Nickname:", SwingConstants.CENTER);
-        JLabel ageLabel = new JLabel("Età:", SwingConstants.CENTER);
-        JLabel roleLabel = new JLabel("Ruolo:", SwingConstants.CENTER);
-        JLabel levelLabel = new JLabel("Livello:", SwingConstants.CENTER);
-        JProgressBar xpBar = new JProgressBar(0, 15);
-        xpBar.setStringPainted(true);
+    JPanel panel = new JPanel(new BorderLayout());
+    panel.setBackground(BACKGROUND_COLOR);
 
-        panel.add(nicknameLabel);
-        panel.add(ageLabel);
-        panel.add(roleLabel);
-        panel.add(levelLabel);
-        panel.add(xpBar);
+    JPanel infoPanel = new JPanel();
+    infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
+    infoPanel.setBackground(Color.WHITE);
+    infoPanel.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(Color.LIGHT_GRAY),
+            BorderFactory.createEmptyBorder(15, 15, 15, 15)
+    ));
 
-        return panel;
-    }
+    JLabel nicknameLabel = new JLabel("Nickname: " + (currentUser != null ? currentUser.getNickname() : "N/A"));
+    JLabel ageLabel = new JLabel("Età: " + (currentUser != null ? currentUser.getAge() : "N/A"));
+    JLabel roleLabel = new JLabel("Ruolo preferito: " + (currentUser != null ? currentUser.getRole() : "N/A"));
+    JLabel levelLabel = new JLabel("Livello: " + (currentUser != null ? currentUser.getLevel() : "N/A"));
+
+    infoPanel.add(nicknameLabel);
+    infoPanel.add(Box.createVerticalStrut(10));
+    infoPanel.add(ageLabel);
+    infoPanel.add(Box.createVerticalStrut(10));
+    infoPanel.add(roleLabel);
+    infoPanel.add(Box.createVerticalStrut(10));
+    infoPanel.add(levelLabel);
+
+    JButton refreshButton = createRoundedButton("Aggiorna", PRIMARY_COLOR, Color.WHITE);
+
+    panel.add(infoPanel, BorderLayout.CENTER);
+    panel.add(refreshButton, BorderLayout.SOUTH);
+
+    return panel;
+}
 
     private void updateHomeScreen() {
         JPanel mainScreen = (JPanel) mainPanel.getComponent(3);
@@ -404,20 +403,27 @@ public class Foot_Friend extends JFrame {
         }
     }
 
-    private JPanel createMatchListPanel() {
-        JPanel panel = new JPanel(new BorderLayout());
-        JPanel matchesPanel = new JPanel();
-        matchesPanel.setLayout(new BoxLayout(matchesPanel, BoxLayout.Y_AXIS));
-        JScrollPane scrollPane = new JScrollPane(matchesPanel);
-        JButton createMatchButton = new JButton("Crea Partita");
+   private JPanel createMatchListPanel() {
+    JPanel panel = new JPanel(new BorderLayout());
+    panel.setBackground(BACKGROUND_COLOR); // Sfondo personalizzato
 
-        createMatchButton.addActionListener(e -> showPanel("CreateMatch"));
+    JPanel matchesPanel = new JPanel();
+    matchesPanel.setLayout(new BoxLayout(matchesPanel, BoxLayout.Y_AXIS));
+    matchesPanel.setBackground(BACKGROUND_COLOR);
 
-        panel.add(scrollPane, BorderLayout.CENTER);
-        panel.add(createMatchButton, BorderLayout.SOUTH);
+    JScrollPane scrollPane = new JScrollPane(matchesPanel);
+    scrollPane.setBorder(BorderFactory.createEmptyBorder());
+    scrollPane.getViewport().setBackground(BACKGROUND_COLOR);
 
-        return panel;
-    }
+    JButton createMatchButton = createRoundedButton("Crea Partita", PRIMARY_COLOR, Color.WHITE);
+
+    createMatchButton.addActionListener(e -> showPanel("CreateMatch"));
+
+    panel.add(scrollPane, BorderLayout.CENTER);
+    panel.add(createMatchButton, BorderLayout.SOUTH);
+
+    return panel;
+}
 
     private void updateMatchListPanel() {
         JPanel mainScreen = (JPanel) mainPanel.getComponent(3);
