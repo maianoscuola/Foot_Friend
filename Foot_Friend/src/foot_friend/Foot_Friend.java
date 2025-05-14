@@ -189,9 +189,9 @@ public class Foot_Friend extends JFrame {
     return panel;
 }
 
-    private JPanel createRegisterPanel() {
+private JPanel createRegisterPanel() {
     JPanel panel = new JPanel(new GridBagLayout());
-    panel.setBackground(BACKGROUND_COLOR); 
+    panel.setBackground(BACKGROUND_COLOR);
 
     GridBagConstraints gbc = new GridBagConstraints();
     gbc.insets = new Insets(10, 10, 10, 10);
@@ -199,13 +199,15 @@ public class Foot_Friend extends JFrame {
 
     JLabel titleLabel = new JLabel("Registrazione", SwingConstants.CENTER);
     titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
-    titleLabel.setForeground(TEXT_COLOR); 
+    titleLabel.setForeground(TEXT_COLOR);
 
     JTextField emailField = new JTextField();
-    emailField.setBorder(BorderFactory.createLineBorder(PRIMARY_COLOR)); 
+    emailField.setBorder(BorderFactory.createLineBorder(PRIMARY_COLOR));
+    emailField.setPreferredSize(new Dimension(200, 30)); // Imposta una dimensione preferita
 
     JPasswordField passwordField = new JPasswordField();
-    passwordField.setBorder(BorderFactory.createLineBorder(PRIMARY_COLOR)); 
+    passwordField.setBorder(BorderFactory.createLineBorder(PRIMARY_COLOR));
+    passwordField.setPreferredSize(new Dimension(200, 30)); // Imposta una dimensione preferita
 
     JButton registerButton = createRoundedButton("Registrati", PRIMARY_COLOR, Color.WHITE);
     JButton backButton = createRoundedButton("Indietro", SECONDARY_COLOR, TEXT_COLOR);
@@ -255,6 +257,7 @@ public class Foot_Friend extends JFrame {
 
     return panel;
 }
+
   private JPanel createCompleteProfilePanel() {
     JPanel panel = new JPanel(new BorderLayout());
     panel.setBackground(BACKGROUND_COLOR);
