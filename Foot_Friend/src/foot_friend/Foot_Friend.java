@@ -21,10 +21,10 @@ public class Foot_Friend extends JFrame {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new Foot_Friend().setVisible(true));
     }
-    private static final Color PRIMARY_COLOR = new Color(33, 150, 243); // Blu
-    private static final Color SECONDARY_COLOR = new Color(255, 193, 7); // Giallo
-    private static final Color BACKGROUND_COLOR = new Color(245, 245, 245); // Grigio chiaro
-    private static final Color TEXT_COLOR = new Color(33, 33, 33); // Testo nero
+    private static final Color PRIMARY_COLOR = new Color(33, 150, 243); 
+    private static final Color SECONDARY_COLOR = new Color(255, 193, 7); 
+    private static final Color BACKGROUND_COLOR = new Color(245, 245, 245); 
+    private static final Color TEXT_COLOR = new Color(33, 33, 33); 
 
     public Foot_Friend() {
         try {
@@ -51,7 +51,7 @@ public class Foot_Friend extends JFrame {
         mainPanel.add(createMatchListPanel(), "MatchList");
         mainPanel.add(createCreateMatchPanel(), "CreateMatch");
         mainPanel.add(createProfilePanel(), "Profile");
-        mainPanel.add(createMatchDetailPanel(), "MatchDetail"); // Nuovo pannello per i dettagli della partita
+        mainPanel.add(createMatchDetailPanel(), "MatchDetail"); 
 
         add(mainPanel);
         cardLayout.show(mainPanel, "Login");
@@ -104,7 +104,7 @@ public class Foot_Friend extends JFrame {
         protected void paintComponent(Graphics g) {
             Graphics2D g2 = (Graphics2D) g.create();
             g2.setColor(bgColor);
-            g2.fillRoundRect(0, 0, getWidth(), getHeight(), 20, 20); // Angoli arrotondati
+            g2.fillRoundRect(0, 0, getWidth(), getHeight(), 20, 20); 
             g2.dispose();
             super.paintComponent(g);
         }
@@ -121,7 +121,7 @@ public class Foot_Friend extends JFrame {
 
   private JPanel createLoginPanel() {
     JPanel panel = new JPanel(new GridBagLayout());
-    panel.setBackground(BACKGROUND_COLOR); // Sfondo personalizzato
+    panel.setBackground(BACKGROUND_COLOR);
 
     GridBagConstraints gbc = new GridBagConstraints();
     gbc.insets = new Insets(10, 10, 10, 10);
@@ -129,13 +129,13 @@ public class Foot_Friend extends JFrame {
 
     JLabel titleLabel = new JLabel("Benvenuto su Foot Friend!", SwingConstants.CENTER);
     titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
-    titleLabel.setForeground(TEXT_COLOR); // Colore del testo
+    titleLabel.setForeground(TEXT_COLOR); 
 
     JTextField emailField = new JTextField();
-    emailField.setBorder(BorderFactory.createLineBorder(PRIMARY_COLOR)); // Bordo blu
+    emailField.setBorder(BorderFactory.createLineBorder(PRIMARY_COLOR)); 
 
     JPasswordField passwordField = new JPasswordField();
-    passwordField.setBorder(BorderFactory.createLineBorder(PRIMARY_COLOR)); // Bordo blu
+    passwordField.setBorder(BorderFactory.createLineBorder(PRIMARY_COLOR));
 
     JButton loginButton = createRoundedButton("Login", PRIMARY_COLOR, Color.WHITE);
     JButton registerButton = createRoundedButton("Registrati", SECONDARY_COLOR, TEXT_COLOR);
@@ -191,7 +191,7 @@ public class Foot_Friend extends JFrame {
 
     private JPanel createRegisterPanel() {
     JPanel panel = new JPanel(new GridBagLayout());
-    panel.setBackground(BACKGROUND_COLOR); // Sfondo personalizzato
+    panel.setBackground(BACKGROUND_COLOR); 
 
     GridBagConstraints gbc = new GridBagConstraints();
     gbc.insets = new Insets(10, 10, 10, 10);
@@ -199,13 +199,13 @@ public class Foot_Friend extends JFrame {
 
     JLabel titleLabel = new JLabel("Registrazione", SwingConstants.CENTER);
     titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
-    titleLabel.setForeground(TEXT_COLOR); // Colore del testo
+    titleLabel.setForeground(TEXT_COLOR); 
 
     JTextField emailField = new JTextField();
-    emailField.setBorder(BorderFactory.createLineBorder(PRIMARY_COLOR)); // Bordo blu
+    emailField.setBorder(BorderFactory.createLineBorder(PRIMARY_COLOR)); 
 
     JPasswordField passwordField = new JPasswordField();
-    passwordField.setBorder(BorderFactory.createLineBorder(PRIMARY_COLOR)); // Bordo blu
+    passwordField.setBorder(BorderFactory.createLineBorder(PRIMARY_COLOR)); 
 
     JButton registerButton = createRoundedButton("Registrati", PRIMARY_COLOR, Color.WHITE);
     JButton backButton = createRoundedButton("Indietro", SECONDARY_COLOR, TEXT_COLOR);
@@ -390,7 +390,7 @@ public class Foot_Friend extends JFrame {
 
    private JPanel createMatchListPanel() {
     JPanel panel = new JPanel(new BorderLayout());
-    panel.setBackground(BACKGROUND_COLOR); // Sfondo personalizzato
+    panel.setBackground(BACKGROUND_COLOR);
 
     JPanel matchesPanel = new JPanel();
     matchesPanel.setLayout(new BoxLayout(matchesPanel, BoxLayout.Y_AXIS));
@@ -455,7 +455,7 @@ public class Foot_Friend extends JFrame {
                 if (joined) {
                     saveMatches(matches);
                     updateMatchDetails(currentMatch);
-                    updateMatchListPanel(); // Aggiorna la lista dopo l'adesione
+                    updateMatchListPanel(); 
                     JOptionPane.showMessageDialog(this, "Unito con successo alla partita!");
                 } else {
                     JOptionPane.showMessageDialog(this, "Non puoi unirti alla partita. Potrebbe essere piena o sei già unito.", "Errore", JOptionPane.ERROR_MESSAGE);
@@ -464,9 +464,9 @@ public class Foot_Friend extends JFrame {
         });
 
         backButton.addActionListener(e -> {
-            // Aggiorna il pannello della lista delle partite prima di tornare indietro
+            
             updateMatchListPanel();
-            // Torna al pannello "MatchList"
+            
             showPanel("MatchList");
         });
         return panel;
@@ -480,7 +480,7 @@ public class Foot_Friend extends JFrame {
     }
 
     private void updateMatchDetails(Match match) {
-        JPanel detailPanel = (JPanel) mainPanel.getComponent(7); // Ottieni il pannello dei dettagli
+        JPanel detailPanel = (JPanel) mainPanel.getComponent(7); 
         ((JLabel) detailPanel.getComponent(0)).setText("Luogo: " + match.getLocation());
         ((JLabel) detailPanel.getComponent(1)).setText("Data: " + match.getDate());
         ((JLabel) detailPanel.getComponent(2)).setText("Modalità: " + match.getMode());
@@ -490,13 +490,13 @@ public class Foot_Friend extends JFrame {
     }
 
     private JPanel createCreateMatchPanel() {
-        JPanel panel = new JPanel(new GridLayout(7, 2, 5, 5));  // Aumentato di una riga per la ComboBox
+        JPanel panel = new JPanel(new GridLayout(7, 2, 5, 5)); 
         JLabel titleLabel = new JLabel("Crea una nuova partita", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 16));
         JTextField locationField = new JTextField();
         JTextField dateField = new JTextField();
         JComboBox<String> modeComboBox = new JComboBox<>(new String[]{"5 vs 5", "7 vs 7", "11 vs 11"});
-        SpinnerModel maxPlayersModel = new SpinnerNumberModel(10, 2, 22, 1);  // Il massimo è 22 per 11 vs 11
+        SpinnerModel maxPlayersModel = new SpinnerNumberModel(10, 2, 22, 1); 
         JSpinner maxPlayersSpinner = new JSpinner(maxPlayersModel);
         JButton createButton = new JButton("Crea Partita");
         JButton backButton = new JButton("Indietro");
@@ -514,26 +514,26 @@ public class Foot_Friend extends JFrame {
         panel.add(createButton);
         panel.add(backButton);
 
-        // Aggiungi un listener per cambiare il numero massimo di giocatori in base alla modalità
+        
         modeComboBox.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 String selectedMode = (String) modeComboBox.getSelectedItem();
                 int maxPlayers = 0;
 
-                // Imposta il numero massimo di giocatori in base alla modalità scelta
+                
                 switch (selectedMode) {
                     case "5 vs 5":
-                        maxPlayers = 10;  // 5 vs 5 = 10 giocatori
+                        maxPlayers = 10; 
                         break;
                     case "7 vs 7":
-                        maxPlayers = 14;  // 7 vs 7 = 14 giocatori
+                        maxPlayers = 14;  
                         break;
                     case "11 vs 11":
-                        maxPlayers = 22;  // 11 vs 11 = 22 giocatori
+                        maxPlayers = 22; 
                         break;
                 }
 
-                // Imposta il valore del numero massimo di giocatori
+                
                 maxPlayersSpinner.setValue(maxPlayers);
                 maxPlayersSpinner.setEnabled(false);
             }
@@ -568,7 +568,7 @@ public class Foot_Friend extends JFrame {
 
     private JPanel createProfilePanel() {
     JPanel panel = new JPanel(new GridBagLayout());
-    panel.setBackground(BACKGROUND_COLOR); // Sfondo personalizzato
+    panel.setBackground(BACKGROUND_COLOR); 
 
     GridBagConstraints gbc = new GridBagConstraints();
     gbc.insets = new Insets(10, 10, 10, 10);
@@ -576,7 +576,7 @@ public class Foot_Friend extends JFrame {
 
     JLabel titleLabel = new JLabel("Il tuo profilo", SwingConstants.CENTER);
     titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
-    titleLabel.setForeground(TEXT_COLOR); // Colore del testo
+    titleLabel.setForeground(TEXT_COLOR); 
 
     JLabel nicknameLabel = new JLabel("Nickname:");
     JLabel nicknameValue = new JLabel("");
@@ -587,7 +587,7 @@ public class Foot_Friend extends JFrame {
     JLabel levelLabel = new JLabel("Livello:");
     JLabel levelValue = new JLabel("");
 
-    // Stile del testo
+    
     nicknameLabel.setForeground(TEXT_COLOR);
     ageLabel.setForeground(TEXT_COLOR);
     roleLabel.setForeground(TEXT_COLOR);
@@ -595,7 +595,7 @@ public class Foot_Friend extends JFrame {
 
     JButton logoutButton = createRoundedButton("Logout", SECONDARY_COLOR, TEXT_COLOR);
 
-    // Posizionamento nel layout
+    
     gbc.gridx = 0;
     gbc.gridy = 0;
     gbc.gridwidth = 2;
