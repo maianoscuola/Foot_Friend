@@ -466,12 +466,7 @@ private JPanel createRegisterPanel() {
             }
         });
 
-        backButton.addActionListener(e -> {
-            
-            updateMatchListPanel();
-            
-            showPanel("MatchList");
-        });
+        backButton.addActionListener(e -> showPanel("MainScreen"));
         return panel;
     }
     private Match currentMatch;
