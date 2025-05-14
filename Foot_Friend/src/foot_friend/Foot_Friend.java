@@ -351,37 +351,22 @@ public class Foot_Friend extends JFrame {
     }
 
     private JPanel createHomeScreen() {
-    JPanel panel = new JPanel(new BorderLayout());
-    panel.setBackground(BACKGROUND_COLOR);
+        JPanel panel = new JPanel(new GridLayout(5, 1, 5, 5));
+        JLabel nicknameLabel = new JLabel("Nickname:", SwingConstants.CENTER);
+        JLabel ageLabel = new JLabel("Età:", SwingConstants.CENTER);
+        JLabel roleLabel = new JLabel("Ruolo:", SwingConstants.CENTER);
+        JLabel levelLabel = new JLabel("Livello:", SwingConstants.CENTER);
+        JProgressBar xpBar = new JProgressBar(0, 15);
+        xpBar.setStringPainted(true);
 
-    JPanel infoPanel = new JPanel();
-    infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
-    infoPanel.setBackground(Color.WHITE);
-    infoPanel.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(Color.LIGHT_GRAY),
-            BorderFactory.createEmptyBorder(15, 15, 15, 15)
-    ));
+        panel.add(nicknameLabel);
+        panel.add(ageLabel);
+        panel.add(roleLabel);
+        panel.add(levelLabel);
+        panel.add(xpBar);
 
-    JLabel nicknameLabel = new JLabel("Nickname: " + (currentUser != null ? currentUser.getNickname() : "N/A"));
-    JLabel ageLabel = new JLabel("Età: " + (currentUser != null ? currentUser.getAge() : "N/A"));
-    JLabel roleLabel = new JLabel("Ruolo preferito: " + (currentUser != null ? currentUser.getRole() : "N/A"));
-    JLabel levelLabel = new JLabel("Livello: " + (currentUser != null ? currentUser.getLevel() : "N/A"));
-
-    infoPanel.add(nicknameLabel);
-    infoPanel.add(Box.createVerticalStrut(10));
-    infoPanel.add(ageLabel);
-    infoPanel.add(Box.createVerticalStrut(10));
-    infoPanel.add(roleLabel);
-    infoPanel.add(Box.createVerticalStrut(10));
-    infoPanel.add(levelLabel);
-
-    JButton refreshButton = createRoundedButton("Aggiorna", PRIMARY_COLOR, Color.WHITE);
-
-    panel.add(infoPanel, BorderLayout.CENTER);
-    panel.add(refreshButton, BorderLayout.SOUTH);
-
-    return panel;
-}
+        return panel;
+    }
 
     private void updateHomeScreen() {
         JPanel mainScreen = (JPanel) mainPanel.getComponent(3);
