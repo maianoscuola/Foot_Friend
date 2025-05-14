@@ -255,49 +255,82 @@ public class Foot_Friend extends JFrame {
 
     return panel;
 }
-    private JPanel createCompleteProfilePanel() {
-        JPanel panel = new JPanel(new GridLayout(4, 2, 5, 5));
-        JLabel titleLabel = new JLabel("Completa il tuo profilo", SwingConstants.CENTER);
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 16));
-        JTextField nicknameField = new JTextField();
-        JTextField ageField = new JTextField();
-        JTextField roleField = new JTextField();
-        JButton saveButton = new JButton("Salva Profilo");
+   private JPanel createCompleteProfilePanel() {
+    JPanel panel = new JPanel(new GridBagLayout());
+    panel.setBackground(BACKGROUND_COLOR); // Sfondo personalizzato
 
-        panel.add(titleLabel);
-        panel.add(new JLabel()); // Placeholder
-        panel.add(new JLabel("Nickname:"));
-        panel.add(nicknameField);
-        panel.add(new JLabel("Età:"));
-        panel.add(ageField);
-        panel.add(new JLabel("Ruolo preferito:"));
-        panel.add(roleField);
-        panel.add(new JLabel()); // Placeholder
-        panel.add(saveButton);
+    GridBagConstraints gbc = new GridBagConstraints();
+    gbc.insets = new Insets(10, 10, 10, 10);
+    gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        saveButton.addActionListener(e -> {
-            if (currentUser != null) {
-                String nickname = nicknameField.getText();
-                try {
-                    int age = Integer.parseInt(ageField.getText());
-                    String role = roleField.getText();
-                    currentUser.setNickname(nickname);
-                    currentUser.setAge(age);
-                    currentUser.setRole(role);
-                    saveUsers(users);
-                    updateHomeScreen();
-                    showPanel("MainScreen");
-                } catch (NumberFormatException ex) {
-                    JOptionPane.showMessageDialog(this, "Inserisci un'età valida.", "Errore", JOptionPane.ERROR_MESSAGE);
-                }
-            } else {
-                JOptionPane.showMessageDialog(this, "Errore: utente non loggato.", "Errore", JOptionPane.ERROR_MESSAGE);
+    JLabel titleLabel = new JLabel("Completa il tuo profilo", SwingConstants.CENTER);
+    titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
+    titleLabel.setForeground(TEXT_COLOR); // Colore del testo
+
+    JTextField nicknameField = new JTextField();
+    nicknameField.setBorder(BorderFactory.createLineBorder(PRIMARY_COLOR)); // Bordo blu
+
+    JTextField ageField = new JTextField();
+    ageField.setBorder(BorderFactory.createLineBorder(PRIMARY_COLOR)); // Bordo blu
+
+    JTextField roleField = new JTextField();
+    roleField.setBorder(BorderFactory.createLineBorder(PRIMARY_COLOR)); // Bordo blu
+
+    JButton saveButton = createRoundedButton("Salva Profilo", PRIMARY_COLOR, Color.WHITE);
+
+    gbc.gridx = 0;
+    gbc.gridy = 0;
+    gbc.gridwidth = 2;
+    panel.add(titleLabel, gbc);
+
+    gbc.gridy++;
+    gbc.gridwidth = 1;
+    panel.add(new JLabel("Nickname:"), gbc);
+
+    gbc.gridx = 1;
+    panel.add(nicknameField, gbc);
+
+    gbc.gridx = 0;
+    gbc.gridy++;
+    panel.add(new JLabel("Età:"), gbc);
+
+    gbc.gridx = 1;
+    panel.add(ageField, gbc);
+
+    gbc.gridx = 0;
+    gbc.gridy++;
+    panel.add(new JLabel("Ruolo preferito:"), gbc);
+
+    gbc.gridx = 1;
+    panel.add(roleField, gbc);
+
+    gbc.gridx = 0;
+    gbc.gridy++;
+    gbc.gridwidth = 2;
+    panel.add(saveButton, gbc);
+
+    saveButton.addActionListener(e -> {
+        if (currentUser != null) {
+            String nickname = nicknameField.getText();
+            try {
+                int age = Integer.parseInt(ageField.getText());
+                String role = roleField.getText();
+                currentUser.setNickname(nickname);
+                currentUser.setAge(age);
+                currentUser.setRole(role);
+                saveUsers(users);
+                updateHomeScreen();
+                showPanel("MainScreen");
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Inserisci un'età valida.", "Errore", JOptionPane.ERROR_MESSAGE);
             }
-        });
+        } else {
+            JOptionPane.showMessageDialog(this, "Errore: utente non loggato.", "Errore", JOptionPane.ERROR_MESSAGE);
+        }
+    });
 
-        return panel;
-    }
-
+    return panel;
+}
     private JPanel createMainScreen() {
         JPanel mainScreen = new JPanel(new BorderLayout());
         JPanel screens = new JPanel(new CardLayout());
@@ -543,39 +576,80 @@ public class Foot_Friend extends JFrame {
     }
 
     private JPanel createProfilePanel() {
-        JPanel panel = new JPanel(new GridLayout(5, 2, 5, 5));
-        JLabel titleLabel = new JLabel("Il tuo profilo", SwingConstants.CENTER);
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 16));
-        JLabel nicknameLabel = new JLabel("Nickname:");
-        JLabel nicknameValue = new JLabel("");
-        JLabel ageLabel = new JLabel("Età:");
-        JLabel ageValue = new JLabel("");
-        JLabel roleLabel = new JLabel("Ruolo:");
-        JLabel roleValue = new JLabel("");
-        JLabel levelLabel = new JLabel("Livello:");
-        JLabel levelValue = new JLabel("");
-        JButton logoutButton = new JButton("Logout");
+    JPanel panel = new JPanel(new GridBagLayout());
+    panel.setBackground(BACKGROUND_COLOR); // Sfondo personalizzato
 
-        panel.add(titleLabel);
-        panel.add(new JLabel()); // Placeholder
-        panel.add(nicknameLabel);
-        panel.add(nicknameValue);
-        panel.add(ageLabel);
-        panel.add(ageValue);
-        panel.add(roleLabel);
-        panel.add(roleValue);
-        panel.add(levelLabel);
-        panel.add(levelValue);
-        panel.add(new JLabel()); // Placeholder
-        panel.add(logoutButton);
+    GridBagConstraints gbc = new GridBagConstraints();
+    gbc.insets = new Insets(10, 10, 10, 10);
+    gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        logoutButton.addActionListener(e -> {
-            currentUser = null;
-            showPanel("Login");
-        });
+    JLabel titleLabel = new JLabel("Il tuo profilo", SwingConstants.CENTER);
+    titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
+    titleLabel.setForeground(TEXT_COLOR); // Colore del testo
 
-        return panel;
-    }
+    JLabel nicknameLabel = new JLabel("Nickname:");
+    JLabel nicknameValue = new JLabel("");
+    JLabel ageLabel = new JLabel("Età:");
+    JLabel ageValue = new JLabel("");
+    JLabel roleLabel = new JLabel("Ruolo:");
+    JLabel roleValue = new JLabel("");
+    JLabel levelLabel = new JLabel("Livello:");
+    JLabel levelValue = new JLabel("");
+
+    // Stile del testo
+    nicknameLabel.setForeground(TEXT_COLOR);
+    ageLabel.setForeground(TEXT_COLOR);
+    roleLabel.setForeground(TEXT_COLOR);
+    levelLabel.setForeground(TEXT_COLOR);
+
+    JButton logoutButton = createRoundedButton("Logout", SECONDARY_COLOR, TEXT_COLOR);
+
+    // Posizionamento nel layout
+    gbc.gridx = 0;
+    gbc.gridy = 0;
+    gbc.gridwidth = 2;
+    panel.add(titleLabel, gbc);
+
+    gbc.gridy++;
+    gbc.gridwidth = 1;
+    panel.add(nicknameLabel, gbc);
+
+    gbc.gridx = 1;
+    panel.add(nicknameValue, gbc);
+
+    gbc.gridx = 0;
+    gbc.gridy++;
+    panel.add(ageLabel, gbc);
+
+    gbc.gridx = 1;
+    panel.add(ageValue, gbc);
+
+    gbc.gridx = 0;
+    gbc.gridy++;
+    panel.add(roleLabel, gbc);
+
+    gbc.gridx = 1;
+    panel.add(roleValue, gbc);
+
+    gbc.gridx = 0;
+    gbc.gridy++;
+    panel.add(levelLabel, gbc);
+
+    gbc.gridx = 1;
+    panel.add(levelValue, gbc);
+
+    gbc.gridx = 0;
+    gbc.gridy++;
+    gbc.gridwidth = 2;
+    panel.add(logoutButton, gbc);
+
+    logoutButton.addActionListener(e -> {
+        currentUser = null;
+        showPanel("Login");
+    });
+
+    return panel;
+}
 
     private void updateProfilePanel() {
         JPanel mainScreen = (JPanel) mainPanel.getComponent(3);
