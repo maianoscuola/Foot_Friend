@@ -341,19 +341,26 @@ public class Foot_Friend extends JFrame {
         panel.add(joinButton);
         panel.add(backButton);
 
-        joinButton.addActionListener(e -> {
-            if (currentMatch != null) {
-                currentMatch.joinMatch();
-                saveMatches(matches);
-                updateMatchDetails(currentMatch);
-                updateMatchListPanel(); // Aggiorna la lista dopo l'adesione
-            }
-        });
-
-        backButton.addActionListener(e -> showPanel("MatchList"));
-
-        return panel;
+       joinButton.addActionListener(e -> {
+    if (currentMatch != null) {
+        boolean joined = currentMatch.joinMatch(currentUser.getEmail());
+        if (joined) {
+            saveMatches(matches);
+            updateMatchDetails(currentMatch);
+            updateMatchListPanel(); // Aggiorna la lista dopo l'adesione
+            JOptionPane.showMessageDialog(this, "Unito con successo alla partita!");
+        } else {
+            JOptionPane.showMessageDialog(this, "Non puoi unirti alla partita. Potrebbe essere piena o sei già unito.", "Errore", JOptionPane.ERROR_MESSAGE);
+        }
     }
+});
+
+       backButton.addActionListener(e -> {
+    // Aggiorna il pannello della lista delle partite prima di tornare indietro
+    updateMatchListPanel();
+    // Torna al pannello "MatchList"
+    showPanel("MatchList");
+});
 
     private Match currentMatch;
 
