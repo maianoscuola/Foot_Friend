@@ -341,27 +341,28 @@ public class Foot_Friend extends JFrame {
         panel.add(joinButton);
         panel.add(backButton);
 
-       joinButton.addActionListener(e -> {
-    if (currentMatch != null) {
-        boolean joined = currentMatch.joinMatch(currentUser.getEmail());
-        if (joined) {
-            saveMatches(matches);
-            updateMatchDetails(currentMatch);
-            updateMatchListPanel(); // Aggiorna la lista dopo l'adesione
-            JOptionPane.showMessageDialog(this, "Unito con successo alla partita!");
-        } else {
-            JOptionPane.showMessageDialog(this, "Non puoi unirti alla partita. Potrebbe essere piena o sei già unito.", "Errore", JOptionPane.ERROR_MESSAGE);
-        }
+        joinButton.addActionListener(e -> {
+            if (currentMatch != null) {
+                boolean joined = currentMatch.joinMatch(currentUser.getEmail());
+                if (joined) {
+                    saveMatches(matches);
+                    updateMatchDetails(currentMatch);
+                    updateMatchListPanel(); // Aggiorna la lista dopo l'adesione
+                    JOptionPane.showMessageDialog(this, "Unito con successo alla partita!");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Non puoi unirti alla partita. Potrebbe essere piena o sei già unito.", "Errore", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
+        backButton.addActionListener(e -> {
+            // Aggiorna il pannello della lista delle partite prima di tornare indietro
+            updateMatchListPanel();
+            // Torna al pannello "MatchList"
+            showPanel("MatchList");
+        });
+        return panel;
     }
-});
-
-       backButton.addActionListener(e -> {
-    // Aggiorna il pannello della lista delle partite prima di tornare indietro
-    updateMatchListPanel();
-    // Torna al pannello "MatchList"
-    showPanel("MatchList");
-});
-
     private Match currentMatch;
 
     private void showMatchDetails(Match match) {
@@ -380,82 +381,82 @@ public class Foot_Friend extends JFrame {
         joinButton.setEnabled(match.getAvailableSpots() > 0);
     }
 
-   private JPanel createCreateMatchPanel() {
-    JPanel panel = new JPanel(new GridLayout(7, 2, 5, 5));  // Aumentato di una riga per la ComboBox
-    JLabel titleLabel = new JLabel("Crea una nuova partita", SwingConstants.CENTER);
-    titleLabel.setFont(new Font("Arial", Font.BOLD, 16));
-    JTextField locationField = new JTextField();
-    JTextField dateField = new JTextField();
-    JComboBox<String> modeComboBox = new JComboBox<>(new String[]{"5 vs 5", "7 vs 7", "11 vs 11"});
-    SpinnerModel maxPlayersModel = new SpinnerNumberModel(10, 2, 22, 1);  // Il massimo è 22 per 11 vs 11
-    JSpinner maxPlayersSpinner = new JSpinner(maxPlayersModel);
-    JButton createButton = new JButton("Crea Partita");
-    JButton backButton = new JButton("Indietro");
+    private JPanel createCreateMatchPanel() {
+        JPanel panel = new JPanel(new GridLayout(7, 2, 5, 5));  // Aumentato di una riga per la ComboBox
+        JLabel titleLabel = new JLabel("Crea una nuova partita", SwingConstants.CENTER);
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        JTextField locationField = new JTextField();
+        JTextField dateField = new JTextField();
+        JComboBox<String> modeComboBox = new JComboBox<>(new String[]{"5 vs 5", "7 vs 7", "11 vs 11"});
+        SpinnerModel maxPlayersModel = new SpinnerNumberModel(10, 2, 22, 1);  // Il massimo è 22 per 11 vs 11
+        JSpinner maxPlayersSpinner = new JSpinner(maxPlayersModel);
+        JButton createButton = new JButton("Crea Partita");
+        JButton backButton = new JButton("Indietro");
 
-    panel.add(titleLabel);
-    panel.add(new JLabel()); // Placeholder
-    panel.add(new JLabel("Luogo:"));
-    panel.add(locationField);
-    panel.add(new JLabel("Data (GG-MM-AAAA):"));
-    panel.add(dateField);
-    panel.add(new JLabel("Modalità:"));
-    panel.add(modeComboBox);
-    panel.add(new JLabel("Max Giocatori:"));
-    panel.add(maxPlayersSpinner);
-    panel.add(createButton);
-    panel.add(backButton);
+        panel.add(titleLabel);
+        panel.add(new JLabel()); // Placeholder
+        panel.add(new JLabel("Luogo:"));
+        panel.add(locationField);
+        panel.add(new JLabel("Data (GG-MM-AAAA):"));
+        panel.add(dateField);
+        panel.add(new JLabel("Modalità:"));
+        panel.add(modeComboBox);
+        panel.add(new JLabel("Max Giocatori:"));
+        panel.add(maxPlayersSpinner);
+        panel.add(createButton);
+        panel.add(backButton);
 
-    // Aggiungi un listener per cambiare il numero massimo di giocatori in base alla modalità
-    modeComboBox.addItemListener(e -> {
-        if (e.getStateChange() == ItemEvent.SELECTED) {
-            String selectedMode = (String) modeComboBox.getSelectedItem();
-            int maxPlayers = 0;
+        // Aggiungi un listener per cambiare il numero massimo di giocatori in base alla modalità
+        modeComboBox.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                String selectedMode = (String) modeComboBox.getSelectedItem();
+                int maxPlayers = 0;
 
-            // Imposta il numero massimo di giocatori in base alla modalità scelta
-            switch (selectedMode) {
-                case "5 vs 5":
-                    maxPlayers = 10;  // 5 vs 5 = 10 giocatori
-                    break;
-                case "7 vs 7":
-                    maxPlayers = 14;  // 7 vs 7 = 14 giocatori
-                    break;
-                case "11 vs 11":
-                    maxPlayers = 22;  // 11 vs 11 = 22 giocatori
-                    break;
+                // Imposta il numero massimo di giocatori in base alla modalità scelta
+                switch (selectedMode) {
+                    case "5 vs 5":
+                        maxPlayers = 10;  // 5 vs 5 = 10 giocatori
+                        break;
+                    case "7 vs 7":
+                        maxPlayers = 14;  // 7 vs 7 = 14 giocatori
+                        break;
+                    case "11 vs 11":
+                        maxPlayers = 22;  // 11 vs 11 = 22 giocatori
+                        break;
+                }
+
+                // Imposta il valore del numero massimo di giocatori
+                maxPlayersSpinner.setValue(maxPlayers);
+                maxPlayersSpinner.setEnabled(false);
             }
+        });
 
-            // Imposta il valore del numero massimo di giocatori
-            maxPlayersSpinner.setValue(maxPlayers);
-            maxPlayersSpinner.setEnabled(false);
-        }
-    });
+        createButton.addActionListener(e -> {
+            if (currentUser != null) {
+                String location = locationField.getText();
+                String date = dateField.getText();
+                String mode = (String) modeComboBox.getSelectedItem();
+                int maxPlayers = (int) maxPlayersSpinner.getValue();
 
-    createButton.addActionListener(e -> {
-        if (currentUser != null) {
-            String location = locationField.getText();
-            String date = dateField.getText();
-            String mode = (String) modeComboBox.getSelectedItem();
-            int maxPlayers = (int) maxPlayersSpinner.getValue();
+                if (location.isEmpty() || date.isEmpty() || mode.isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "Tutti i campi sono obbligatori.", "Errore", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
 
-            if (location.isEmpty() || date.isEmpty() || mode.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Tutti i campi sono obbligatori.", "Errore", JOptionPane.ERROR_MESSAGE);
-                return;
+                Match newMatch = new Match(currentUser.getEmail(), location, date, mode, maxPlayers);
+                matches.add(newMatch);
+                saveMatches(matches);
+                updateMatchListPanel();
+                showPanel("MainScreen");
+            } else {
+                JOptionPane.showMessageDialog(this, "Errore: utente non loggato.", "Errore", JOptionPane.ERROR_MESSAGE);
             }
+        });
 
-            Match newMatch = new Match(currentUser.getEmail(), location, date, mode, maxPlayers);
-            matches.add(newMatch);
-            saveMatches(matches);
-            updateMatchListPanel();
-            showPanel("MainScreen");
-        } else {
-            JOptionPane.showMessageDialog(this, "Errore: utente non loggato.", "Errore", JOptionPane.ERROR_MESSAGE);
-        }
-    });
+        backButton.addActionListener(e -> showPanel("MainScreen"));
 
-    backButton.addActionListener(e -> showPanel("MainScreen"));
-
-    return panel;
-}
+        return panel;
+    }
 
     private JPanel createProfilePanel() {
         JPanel panel = new JPanel(new GridLayout(5, 2, 5, 5));
