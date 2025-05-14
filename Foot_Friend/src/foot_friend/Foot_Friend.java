@@ -21,6 +21,10 @@ public class Foot_Friend extends JFrame {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new Foot_Friend().setVisible(true));
     }
+    private static final Color PRIMARY_COLOR = new Color(33, 150, 243); // Blu
+    private static final Color SECONDARY_COLOR = new Color(255, 193, 7); // Giallo
+    private static final Color BACKGROUND_COLOR = new Color(245, 245, 245); // Grigio chiaro
+    private static final Color TEXT_COLOR = new Color(33, 33, 33); // Testo nero
 
     public Foot_Friend() {
         try {
@@ -94,83 +98,163 @@ public class Foot_Friend extends JFrame {
             System.out.println("Errore durante il salvataggio delle partite: " + e.getMessage());
         }
     }
+    private JButton createRoundedButton(String text, Color bgColor, Color textColor) {
+    JButton button = new JButton(text) {
+        @Override
+        protected void paintComponent(Graphics g) {
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setColor(bgColor);
+            g2.fillRoundRect(0, 0, getWidth(), getHeight(), 20, 20); // Angoli arrotondati
+            g2.dispose();
+            super.paintComponent(g);
+        }
 
-    private JPanel createLoginPanel() {
-        JPanel panel = new JPanel(new GridLayout(4, 1, 5, 5));
-        JLabel titleLabel = new JLabel("Benvenuto su Foot Friend!", SwingConstants.CENTER);
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
-        JTextField emailField = new JTextField();
-        JPasswordField passwordField = new JPasswordField();
-        JButton loginButton = new JButton("Login");
-        JButton registerButton = new JButton("Registrati");
+       
+    };
+    button.setForeground(textColor);
+    button.setFocusPainted(false);
+    button.setContentAreaFilled(false);
+    button.setOpaque(false);
+    button.setFont(new Font("Arial", Font.BOLD, 14));
+    return button;
+}
 
-        panel.add(titleLabel);
-        panel.add(new JLabel("Email:"));
-        panel.add(emailField);
-        panel.add(new JLabel("Password:"));
-        panel.add(passwordField);
-        panel.add(loginButton);
-        panel.add(registerButton);
+  private JPanel createLoginPanel() {
+    JPanel panel = new JPanel(new GridBagLayout());
+    panel.setBackground(BACKGROUND_COLOR); // Sfondo personalizzato
 
-        loginButton.addActionListener(e -> {
-            String email = emailField.getText();
-            String password = new String(passwordField.getPassword());
-            User user = users.get(email);
-            if (user != null && user.getPassword().equals(password)) {
-                currentUser = user;
-                if (currentUser.isProfileComplete()) {
-                    updateHomeScreen();
-                    showPanel("MainScreen");
-                } else {
-                    showPanel("CompleteProfile");
-                }
+    GridBagConstraints gbc = new GridBagConstraints();
+    gbc.insets = new Insets(10, 10, 10, 10);
+    gbc.fill = GridBagConstraints.HORIZONTAL;
+
+    JLabel titleLabel = new JLabel("Benvenuto su Foot Friend!", SwingConstants.CENTER);
+    titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
+    titleLabel.setForeground(TEXT_COLOR); // Colore del testo
+
+    JTextField emailField = new JTextField();
+    emailField.setBorder(BorderFactory.createLineBorder(PRIMARY_COLOR)); // Bordo blu
+
+    JPasswordField passwordField = new JPasswordField();
+    passwordField.setBorder(BorderFactory.createLineBorder(PRIMARY_COLOR)); // Bordo blu
+
+    JButton loginButton = createRoundedButton("Login", PRIMARY_COLOR, Color.WHITE);
+    JButton registerButton = createRoundedButton("Registrati", SECONDARY_COLOR, TEXT_COLOR);
+
+    gbc.gridx = 0;
+    gbc.gridy = 0;
+    gbc.gridwidth = 2;
+    panel.add(titleLabel, gbc);
+
+    gbc.gridy++;
+    gbc.gridwidth = 1;
+    panel.add(new JLabel("Email:"), gbc);
+
+    gbc.gridx = 1;
+    panel.add(emailField, gbc);
+
+    gbc.gridx = 0;
+    gbc.gridy++;
+    panel.add(new JLabel("Password:"), gbc);
+
+    gbc.gridx = 1;
+    panel.add(passwordField, gbc);
+
+    gbc.gridx = 0;
+    gbc.gridy++;
+    gbc.gridwidth = 2;
+    panel.add(loginButton, gbc);
+
+    gbc.gridy++;
+    panel.add(registerButton, gbc);
+
+    loginButton.addActionListener(e -> {
+        String email = emailField.getText();
+        String password = new String(passwordField.getPassword());
+        User user = users.get(email);
+        if (user != null && user.getPassword().equals(password)) {
+            currentUser = user;
+            if (currentUser.isProfileComplete()) {
+                updateHomeScreen();
+                showPanel("MainScreen");
             } else {
-                JOptionPane.showMessageDialog(this, "Credenziali non valide.", "Errore di Login", JOptionPane.ERROR_MESSAGE);
-            }
-        });
-
-        registerButton.addActionListener(e -> showPanel("Register"));
-
-        return panel;
-    }
-
-    private JPanel createRegisterPanel() {
-        JPanel panel = new JPanel(new GridLayout(4, 2, 5, 5));
-        JLabel titleLabel = new JLabel("Registrazione", SwingConstants.CENTER);
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 16));
-        JTextField emailField = new JTextField();
-        JPasswordField passwordField = new JPasswordField();
-        JButton registerButton = new JButton("Registrati");
-        JButton backButton = new JButton("Indietro");
-
-        panel.add(titleLabel);
-        panel.add(new JLabel()); // Placeholder
-        panel.add(new JLabel("Email:"));
-        panel.add(emailField);
-        panel.add(new JLabel("Password:"));
-        panel.add(passwordField);
-        panel.add(registerButton);
-        panel.add(backButton);
-
-        registerButton.addActionListener(e -> {
-            String email = emailField.getText();
-            String password = new String(passwordField.getPassword());
-            if (users.containsKey(email)) {
-                JOptionPane.showMessageDialog(this, "Email già registrata.", "Errore di Registrazione", JOptionPane.ERROR_MESSAGE);
-            } else {
-                User newUser = new User(email, password);
-                users.put(email, newUser);
-                saveUsers(users);
-                currentUser = newUser;
                 showPanel("CompleteProfile");
             }
-        });
+        } else {
+            JOptionPane.showMessageDialog(this, "Credenziali non valide.", "Errore di Login", JOptionPane.ERROR_MESSAGE);
+        }
+    });
 
-        backButton.addActionListener(e -> showPanel("Login"));
+    registerButton.addActionListener(e -> showPanel("Register"));
 
-        return panel;
-    }
+    return panel;
+}
 
+    private JPanel createRegisterPanel() {
+    JPanel panel = new JPanel(new GridBagLayout());
+    panel.setBackground(BACKGROUND_COLOR); // Sfondo personalizzato
+
+    GridBagConstraints gbc = new GridBagConstraints();
+    gbc.insets = new Insets(10, 10, 10, 10);
+    gbc.fill = GridBagConstraints.HORIZONTAL;
+
+    JLabel titleLabel = new JLabel("Registrazione", SwingConstants.CENTER);
+    titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
+    titleLabel.setForeground(TEXT_COLOR); // Colore del testo
+
+    JTextField emailField = new JTextField();
+    emailField.setBorder(BorderFactory.createLineBorder(PRIMARY_COLOR)); // Bordo blu
+
+    JPasswordField passwordField = new JPasswordField();
+    passwordField.setBorder(BorderFactory.createLineBorder(PRIMARY_COLOR)); // Bordo blu
+
+    JButton registerButton = createRoundedButton("Registrati", PRIMARY_COLOR, Color.WHITE);
+    JButton backButton = createRoundedButton("Indietro", SECONDARY_COLOR, TEXT_COLOR);
+
+    gbc.gridx = 0;
+    gbc.gridy = 0;
+    gbc.gridwidth = 2;
+    panel.add(titleLabel, gbc);
+
+    gbc.gridy++;
+    gbc.gridwidth = 1;
+    panel.add(new JLabel("Email:"), gbc);
+
+    gbc.gridx = 1;
+    panel.add(emailField, gbc);
+
+    gbc.gridx = 0;
+    gbc.gridy++;
+    panel.add(new JLabel("Password:"), gbc);
+
+    gbc.gridx = 1;
+    panel.add(passwordField, gbc);
+
+    gbc.gridx = 0;
+    gbc.gridy++;
+    gbc.gridwidth = 2;
+    panel.add(registerButton, gbc);
+
+    gbc.gridy++;
+    panel.add(backButton, gbc);
+
+    registerButton.addActionListener(e -> {
+        String email = emailField.getText();
+        String password = new String(passwordField.getPassword());
+        if (users.containsKey(email)) {
+            JOptionPane.showMessageDialog(this, "Email già registrata.", "Errore di Registrazione", JOptionPane.ERROR_MESSAGE);
+        } else {
+            User newUser = new User(email, password);
+            users.put(email, newUser);
+            saveUsers(users);
+            currentUser = newUser;
+            showPanel("CompleteProfile");
+        }
+    });
+
+    backButton.addActionListener(e -> showPanel("Login"));
+
+    return panel;
+}
     private JPanel createCompleteProfilePanel() {
         JPanel panel = new JPanel(new GridLayout(4, 2, 5, 5));
         JLabel titleLabel = new JLabel("Completa il tuo profilo", SwingConstants.CENTER);
