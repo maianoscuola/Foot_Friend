@@ -500,7 +500,7 @@ private JPanel createRegisterPanel() {
         JButton backButton = new JButton("Indietro");
 
         panel.add(titleLabel);
-        panel.add(new JLabel()); // Placeholder
+        panel.add(new JLabel()); 
         panel.add(new JLabel("Luogo:"));
         panel.add(locationField);
         panel.add(new JLabel("Data (GG-MM-AAAA):"));
@@ -642,10 +642,10 @@ private JPanel createRegisterPanel() {
 
     private void updateProfilePanel() {
     JPanel mainScreen = (JPanel) mainPanel.getComponent(3);
-    JPanel profileScreen = (JPanel) ((JPanel) mainScreen.getComponent(0)).getComponent(2); // Naviga al profilo
+    JPanel profileScreen = (JPanel) ((JPanel) mainScreen.getComponent(0)).getComponent(2); 
     
     if (currentUser != null) {
-        // Aggiorna i valori con etichette descrittive
+        
         ((JLabel) profileScreen.getComponent(1)).setText("Email: " + String.valueOf(currentUser.getEmail()));
         ((JLabel) profileScreen.getComponent(3)).setText("Nickname: " + currentUser.getNickname());
         ((JLabel) profileScreen.getComponent(5)).setText("Età: " + String.valueOf(currentUser.getAge()));
@@ -653,7 +653,7 @@ private JPanel createRegisterPanel() {
         
         
     } else {
-        // Ripristina valori vuoti
+        
         ((JLabel) profileScreen.getComponent(1)).setText("");
         ((JLabel) profileScreen.getComponent(3)).setText("");
         ((JLabel) profileScreen.getComponent(5)).setText("");
