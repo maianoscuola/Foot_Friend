@@ -436,38 +436,55 @@ private JPanel createRegisterPanel() {
         matchesPanel.repaint();
     }
 
-    private JPanel createMatchDetailPanel() {
-        JPanel panel = new JPanel(new GridLayout(6, 1, 5, 5));
-        JLabel locationLabel = new JLabel("Luogo:");
-        JLabel dateLabel = new JLabel("Data:");
-        JLabel modeLabel = new JLabel("Modalità:");
-        JLabel playersLabel = new JLabel("Giocatori:");
-        JButton joinButton = new JButton("Unisciti");
-        JButton backButton = new JButton("Indietro");
+   private JPanel createMatchDetailPanel() {
+    JPanel panel = new JPanel(new GridLayout(7, 1, 5, 5));
+    JLabel locationLabel = new JLabel("Luogo:");
+    JLabel dateLabel = new JLabel("Data:");
+    JLabel modeLabel = new JLabel("Modalità:");
+    JLabel playersLabel = new JLabel("Giocatori:");
+    JButton joinButton = new JButton("Unisciti");
+    JButton leaveButton = new JButton("Abbandona partita");
+    JButton backButton = new JButton("Indietro");
 
-        panel.add(locationLabel);
-        panel.add(dateLabel);
-        panel.add(modeLabel);
-        panel.add(playersLabel);
-        panel.add(joinButton);
-        panel.add(backButton);
+    panel.add(locationLabel);
+    panel.add(dateLabel);
+    panel.add(modeLabel);
+    panel.add(playersLabel);
+    panel.add(joinButton);
+    panel.add(leaveButton);
+    panel.add(backButton);
 
-        joinButton.addActionListener(e -> {
-            if (currentMatch != null) {
-                boolean joined = currentMatch.joinMatch(currentUser.getEmail());
-                if (joined) {
-                    saveMatches(matches);
-                    updateMatchDetails(currentMatch);
-                    updateMatchListPanel(); 
-                    JOptionPane.showMessageDialog(this, "Unito con successo alla partita!");
-                } else {
-                    JOptionPane.showMessageDialog(this, "Non puoi unirti alla partita. Potrebbe essere piena o sei già unito.", "Errore", JOptionPane.ERROR_MESSAGE);
-                }
+    joinButton.addActionListener(e -> {
+        if (currentMatch != null && currentUser != null) {
+            boolean joined = currentMatch.joinMatch(currentUser.getEmail());
+            if (joined) {
+                saveMatches(matches);
+                updateMatchDetails(currentMatch);
+                updateMatchListPanel();
+                JOptionPane.showMessageDialog(this, "Unito con successo alla partita!");
+            } else {
+                JOptionPane.showMessageDialog(this, "Non puoi unirti alla partita. Potrebbe essere piena o sei già unito.", "Errore", JOptionPane.ERROR_MESSAGE);
             }
-        });
+        }
+    });
 
-        backButton.addActionListener(e -> showPanel("MainScreen"));
-        return panel;
+    leaveButton.addActionListener(e -> {
+        if (currentMatch != null && currentUser != null) {
+            boolean left = currentMatch.leaveMatch(currentUser.getEmail());
+            if (left) {
+                saveMatches(matches);
+                updateMatchDetails(currentMatch);
+                updateMatchListPanel();
+                JOptionPane.showMessageDialog(this, "Hai abbandonato la partita.");
+            } else {
+                JOptionPane.showMessageDialog(this, "Non puoi abbandonare la partita perché non sei iscritto, oppure perche sei il creatore della partita.", "Errore", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    });
+
+    backButton.addActionListener(e -> showPanel("MainScreen"));
+
+ return panel;
     }
     private Match currentMatch;
 
