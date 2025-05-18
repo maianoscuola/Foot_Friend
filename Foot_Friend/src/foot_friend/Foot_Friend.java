@@ -442,7 +442,7 @@ private JPanel createRegisterPanel() {
     JLabel dateLabel = new JLabel("Data:");
     JLabel modeLabel = new JLabel("Modalità:");
     JLabel playersLabel = new JLabel("Giocatori:");
-    JButton joinButton = new JButton("Unisciti");
+    JButton joinButtonDetail = new JButton("Unisciti");
     JButton leaveButton = new JButton("Abbandona partita");
     JButton backButton = new JButton("Indietro");
 
@@ -450,11 +450,11 @@ private JPanel createRegisterPanel() {
     panel.add(dateLabel);
     panel.add(modeLabel);
     panel.add(playersLabel);
-    panel.add(joinButton);
+    panel.add(joinButtonDetail);
     panel.add(leaveButton);
     panel.add(backButton);
 
-    joinButton.addActionListener(e -> {
+    joinButtonDetail.addActionListener(e -> {
         if (currentMatch != null && currentUser != null) {
             boolean joined = currentMatch.joinMatch(currentUser.getEmail());
             if (joined) {
@@ -477,15 +477,16 @@ private JPanel createRegisterPanel() {
                 updateMatchListPanel();
                 JOptionPane.showMessageDialog(this, "Hai abbandonato la partita.");
             } else {
-                JOptionPane.showMessageDialog(this, "Non puoi abbandonare la partita perché non sei iscritto, oppure perche sei il creatore della partita.", "Errore", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Non puoi abbandonare la partita perché non sei iscritto, oppure perché sei il creatore della partita.", "Errore", JOptionPane.ERROR_MESSAGE);
             }
         }
     });
 
     backButton.addActionListener(e -> showPanel("MainScreen"));
 
- return panel;
-    }
+    return panel;
+}
+
     private Match currentMatch;
 
     private void showMatchDetails(Match match) {
@@ -494,15 +495,21 @@ private JPanel createRegisterPanel() {
         showPanel("MatchDetail");
     }
 
-    private void updateMatchDetails(Match match) {
-        JPanel detailPanel = (JPanel) mainPanel.getComponent(7); 
-        ((JLabel) detailPanel.getComponent(0)).setText("Luogo: " + match.getLocation());
-        ((JLabel) detailPanel.getComponent(1)).setText("Data: " + match.getDate());
-        ((JLabel) detailPanel.getComponent(2)).setText("Modalità: " + match.getMode());
-        ((JLabel) detailPanel.getComponent(3)).setText("Giocatori: " + match.getCurrentPlayers() + "/" + match.getMaxPlayers());
-        JButton joinButton = (JButton) detailPanel.getComponent(4);
-        joinButton.setEnabled(match.getAvailableSpots() > 0);
-    }
+  private void updateMatchDetails(Match match) {
+    JPanel detailPanel = (JPanel) mainPanel.getComponent(7); 
+    ((JLabel) detailPanel.getComponent(0)).setText("Luogo: " + match.getLocation());
+    ((JLabel) detailPanel.getComponent(1)).setText("Data: " + match.getDate());
+    ((JLabel) detailPanel.getComponent(2)).setText("Modalità: " + match.getMode());
+    ((JLabel) detailPanel.getComponent(3)).setText("Giocatori: " + match.getCurrentPlayers() + "/" + match.getMaxPlayers());
+    
+    JButton joinButton = (JButton) detailPanel.getComponent(4);
+    
+    // Controllo per verificare se l'utente è già iscritto
+    boolean alreadyJoined = match.isPlayerInMatch(currentUser.getEmail());
+    joinButton.setEnabled(match.getAvailableSpots() > 0 && !alreadyJoined);
+}
+
+
 
     private JPanel createCreateMatchPanel() {
         JPanel panel = new JPanel(new GridLayout(7, 2, 5, 5)); 

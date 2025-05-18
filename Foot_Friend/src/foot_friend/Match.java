@@ -1,8 +1,12 @@
 package foot_friend;
 
+
 import java.util.HashSet;
 import java.util.Set;
+
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Match implements Serializable {
     private String creator;
@@ -19,6 +23,7 @@ public class Match implements Serializable {
         this.mode = mode;
         this.maxPlayers = maxPlayers;
         this.players = new HashSet<>();
+        this.players.add(creator); // Aggiungi il creatore come primo giocatore
         this.players.add(creator);
     }
 
@@ -58,13 +63,17 @@ public class Match implements Serializable {
     }
 
     public boolean leaveMatch(String userEmail) {
-        
-        if (userEmail.equals(creator)) {
-            return false;
-        }
-        
-        return players.remove(userEmail);
+    // Se il creatore esce, possiamo decidere:
+    if (userEmail.equals(creator)) {
+        // 1. O si rimuove completamente la partita
+        // return players.remove(userEmail) && players.isEmpty();
+
+        // 2. O si lascia la partita attiva e si rimuove solo il creatore
+        creator = null;
     }
+    return players.remove(userEmail);
+}
+
 
     public boolean isPlayerInMatch(String userEmail) {
         return players.contains(userEmail);
