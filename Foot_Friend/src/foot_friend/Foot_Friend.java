@@ -455,18 +455,25 @@ private JPanel createRegisterPanel() {
     panel.add(backButton);
 
     joinButtonDetail.addActionListener(e -> {
-        if (currentMatch != null && currentUser != null) {
-            boolean joined = currentMatch.joinMatch(currentUser.getEmail());
-            if (joined) {
-                saveMatches(matches);
-                updateMatchDetails(currentMatch);
-                updateMatchListPanel();
-                JOptionPane.showMessageDialog(this, "Unito con successo alla partita!");
-            } else {
-                JOptionPane.showMessageDialog(this, "Non puoi unirti alla partita. Potrebbe essere piena o sei già unito.", "Errore", JOptionPane.ERROR_MESSAGE);
-            }
+    if (currentMatch != null && currentUser != null) {
+        boolean joined = currentMatch.joinMatch(currentUser.getEmail());
+        if (joined) {
+            // Aumenta gli XP del giocatore
+            currentUser.addXp(15);  // Qui sto assumendo che il metodo per aggiungere XP sia "addXp"
+            saveUsers(users);       // Salva i dati aggiornati dell'utente
+
+            // Aggiorna l'interfaccia
+            saveMatches(matches);
+            updateMatchDetails(currentMatch);
+            updateMatchListPanel();
+            updateHomeScreen(); // Aggiungi questo per aggiornare anche la schermata Home
+            JOptionPane.showMessageDialog(this, "Unito con successo alla partita!");
+        } else {
+            JOptionPane.showMessageDialog(this, "Non puoi unirti alla partita. Potrebbe essere piena o sei già unito.", "Errore", JOptionPane.ERROR_MESSAGE);
         }
-    });
+    }
+});
+
 
     leaveButton.addActionListener(e -> {
         if (currentMatch != null && currentUser != null) {
@@ -477,7 +484,7 @@ private JPanel createRegisterPanel() {
                 updateMatchListPanel();
                 JOptionPane.showMessageDialog(this, "Hai abbandonato la partita.");
             } else {
-                JOptionPane.showMessageDialog(this, "Non puoi abbandonare la partita perché non sei iscritto, oppure perché sei il creatore della partita.", "Errore", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Non puoi abbandonare la partita perché non sei iscritto", "Errore", JOptionPane.ERROR_MESSAGE);
             }
         }
     });
